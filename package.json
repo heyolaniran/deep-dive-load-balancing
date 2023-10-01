@@ -1,0 +1,24 @@
+{
+  "name": "load-balancer",
+  "version": "1.0.0",
+  "description": "High Load Balancing system that can handle heterogeneous backend applications servers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "load-balancing",
+    "servers",
+    "metrics",
+    "https",
+    "nodejs",
+    "express"
+  ],
+  "author": "heyolaniran",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6",
+    "https": "^1.0.0"
+  }
+}

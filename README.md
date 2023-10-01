@@ -1,4 +1,4 @@
-# deep-dive-load-balancing
+# Deep-dive-load-balancing
 Advanced load balancing system that can handle heterogeneous backend servers
 
 ## What about the project ?  

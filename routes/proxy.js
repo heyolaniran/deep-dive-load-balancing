@@ -1,5 +1,5 @@
 const express = require("express")
-const proxy = require("http-proxy-middleware")
+const { createProxyMiddleware } = require("http-proxy-middleware")
 const router = express.Router() 
 
 const servers = [
@@ -39,9 +39,9 @@ function getServer() {
 router.all("*" , (req , res) => { 
     const target = getServer()
     proxyOptions.target = `http://${target.host}:${target.port}`
-
+    console.log("proxy " ,proxyOptions)
     // forwarding req
-    proxy(proxyOptions)(req, res); 
+   createProxyMiddleware(proxyOptions) ; 
 }) ; 
 
 module.exports = router ; 

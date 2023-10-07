@@ -7,7 +7,7 @@ const healthyCheck =  async () => {
     for(let i=0 ; i < servers.length ; i++) { 
         const server = servers[i] ; 
         try {
-            const response = await axios.get(`http://${server.host}:${server.port}`) ; 
+            const response = await axios.get(`http://${server.host}:${server.port}/health`) ; 
             if(response.status === 200 ) {
     
                 results.push({

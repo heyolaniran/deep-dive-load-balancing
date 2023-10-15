@@ -13,18 +13,34 @@ const proxyOptions = {
     loglevel : 'debug'
 }
 
+let healthyServers  = await results
+
+// Weighted Round Robin 
+
+
+let totals = [] ; 
+function initWeights() {  
+    totals = []
+    let runningTotal = 0 
+
+    for(let i= 0; i<healthyServers.length ; i++) { 
+        runningTotal += healthyServers[i].weight 
+        totals.push(runningTotal)
+    }
+}
 
 // servers index 
-let servIndex = 0 ; 
-function getServer() { 
-    servIndex = (servIndex +1) % servers.length
 
-    return servers[servIndex]
+function getServer() { 
+  const random = Math.floor(Math.random * totals[totals.length -1])
+
+  for(let i= 0 ; i < totals.length ; i++) {
+    if(random <= totals[i])
+        return healthyServers[i] ; 
+  }
 }
 
 // proxys req 
-
-let healthyServers  = [] 
 
 
 
@@ -42,13 +58,15 @@ router.all("*" , (req , res) => {
 }) ; 
 
 async function updateHealthyServers() { 
-    
-    console.log( await results) ; 
+
+  console.log(await results)
+  return  healthyServers = await results ; 
   
+    
 }
 
 updateHealthyServers() ; 
-
+console.log(healthyServers)
 // heath check period 
 setInterval(updateHealthyServers, 10000) ; 
 

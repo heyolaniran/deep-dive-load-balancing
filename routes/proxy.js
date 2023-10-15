@@ -1,8 +1,11 @@
 const express = require("express")
+const cookieParser = require("cookie-parser")
+app = express() ; 
+
 const { createProxyMiddleware } = require("http-proxy-middleware")
 const router = express.Router() 
-const servers = require("../utils/servers") ; 
 const results = require("../utils/healthy") ; 
+const servers = require("../utils/servers");
 // proxy configuration 
 const proxyOptions = {
     target : '', 
@@ -13,7 +16,9 @@ const proxyOptions = {
     loglevel : 'debug'
 }
 
-let healthyServers  = await results
+ healthyServers  =  async () => {
+   return await results
+ }
 
 // Weighted Round Robin 
 
@@ -36,25 +41,38 @@ function getServer() {
 
   for(let i= 0 ; i < totals.length ; i++) {
     if(random <= totals[i])
-        return healthyServers[i] ; 
+        return servers.find(server => healthyServers[i].id == server.id) ; 
   }
 }
 
 // proxys req 
 
+const COOKIE_NAME =  'lb-affinity'
 
+app.use(cookieParser())
 
 router.all("*" , (req , res) => { 
+    
+  
 
     if(healthyServers.length === 0) { 
         return res.status(500).send("No healthy Servers available") ;
     }
 
     const target = getServer()
+    if(!req.cookies[COOKIE_NAME]) { 
+        res.cookie(COOKIE_NAME, target.id, {
+            httpOnly: true
+        }) 
+    } else {
+        const affinityId = req.cookies[COOKIE_NAME] ; 
+        target = servers.find(server => server.id === affinityId)
+    }
     proxyOptions.target = `http://${target.host}:${target.port}`
     console.log("proxy " ,proxyOptions)
     // forwarding req
    createProxyMiddleware(proxyOptions) ; 
+  
 }) ; 
 
 async function updateHealthyServers() { 

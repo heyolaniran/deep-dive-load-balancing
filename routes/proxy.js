@@ -32,7 +32,7 @@ function initWeights() {
 // servers index 
 
 function getServer() { 
-  const random = Math.floor(Math.random * totals[totals.length -1])
+  const random = Math.floor(Math.random() * totals[totals.length -1]) +1 ; 
 
   for(let i= 0 ; i < totals.length ; i++) {
     if(random <= totals[i])
